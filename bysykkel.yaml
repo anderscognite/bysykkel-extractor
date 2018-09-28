@@ -1,19 +1,28 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: bysykkel
 spec:
-  containers:
-  - name: bysykkel
-    image: gcr.io/cognite-experiments/andershaf-bysykkel:latest
-    env:
-      - name: COGNITE_API_KEY_AH
-        valueFrom:
-          secretKeyRef:
-            name: api-keys
-            key: cognite_apikey
-      - name: BYSYKKEL_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: api-keys
-            key: bysykkelapi
+  selector:
+    matchLabels:
+      app: bysykkel-sampler
+  template:
+    metadata:
+      labels:
+        app: bysykkel-sampler
+    spec:
+      containers:
+      - name: bysykkel
+        imagePullPolicy: Always
+        image: gcr.io/cognite-experiments/andershaf-bysykkel:latest
+        env:
+          - name: COGNITE_API_KEY_AH
+            valueFrom:
+              secretKeyRef:
+                name: api-key
+                key: cognite_apikey
+          - name: BYSYKKEL_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: api-key
+                key: bysykkelapikey
