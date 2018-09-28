@@ -77,8 +77,10 @@ def fetchAvailability():
 				timestamp = int(time.time()*1000)
 				datapoints.append(TimeseriesWithDatapoints(bikesAssetName, [Datapoint(timestamp, numBikes)]))
 				datapoints.append(TimeseriesWithDatapoints(locksAssetName, [Datapoint(timestamp, numLocks)]))
+		timestamp = int(time.time()*1000)
 		print('Posting %d data points' % len(datapoints))
-		post_multi_tag_datapoints(datapoints)
+		print('Now is ', timestamp)
+		#post_multi_tag_datapoints(datapoints)
 	except:
 		print('Error')
 	threading.Timer(1.0, fetchAvailability).start()
