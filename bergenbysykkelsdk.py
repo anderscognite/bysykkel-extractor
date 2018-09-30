@@ -2,10 +2,7 @@ import requests, os
 from bysykkel import Station
 
 def get(url):
-	baseUrl = "https://oslobysykkel.no/api/v1/"
-	url = baseUrl+url
-	
-	headers = {"Client-Identifier": os.getenv('BYSYKKEL_API_KEY')}
+	headers = {}
 	params = {}
 	cookies = {}
 	
@@ -17,15 +14,15 @@ def get(url):
 		raise RuntimeError(str(res.status_code)+' error') from error
 
 def get_stations():
-	data = get('stations')
+	data = get('http://gbfs.urbansharing.com/bergen-city-bike/station_information.json')['data']
 	stations = []
 	for station in data["stations"]:
 		stations.append(Station(
-			station_id=station['id'],
-			name=station['title'],
-			subtitle=station['subtitle'],
-			longitude=station['center']['longitude'],
-			latitude=station['center']['latitude']
+			station_id=station['station_id'],
+			name=station['name'],
+			subtitle=station['address'],
+			longitude=station['lon'],
+			latitude=station['lat']
 		))
 	return stations
 
