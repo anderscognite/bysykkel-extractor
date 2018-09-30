@@ -38,7 +38,7 @@ def create_timeseries(cities):
 # Find root assets
 cities = {
 	'Oslo': {'stations': oslo.get_stations()},
-	'Bergen': {'stations': bergen.get_stations()}
+	'Bergen': {'stations': bergen.get_stations()},
 	'Trondheim': {'stations': trondheim.get_stations()}
 }
 find_or_create_root_assets(cities)

@@ -1,4 +1,5 @@
 from cognite.v05.assets import get_assets, post_assets, get_asset_subtree, delete_assets
+from cognite.v05.dto import Asset
 
 class Station():
 	def __init__(self, station_id, name, subtitle, longitude, latitude):
