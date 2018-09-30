@@ -12,7 +12,7 @@ class Station():
 	def __repr__(self):
 		return 'Asset: '+self.title
 
-def get_request(url):
+def get(url):
 	baseUrl = "https://oslobysykkel.no/api/v1/"
 	url = baseUrl+url
 	
@@ -27,22 +27,12 @@ def get_request(url):
 	else:
 		raise RuntimeError(str(res.status_code)+' error') from error
 
-def delete_request(url):
-	baseUrl = "https://api.cognitedata.com/api/0.5/"
-	url = baseUrl+url
-	
-	headers = {"api-key": os.getenv('COGNITE_API_KEY_AH')}
-	params = {}
-	cookies = {}
-	
-	res = requests.delete(url, params=params, headers=headers, cookies=cookies)
-	
-def get_stations():
-	data = get_request('stations')
+def getStations():
+	data = get('stations')
 	stations = []
 	for station in data["stations"]:
 		stations.append(Station(station))
 	return stations
 
-def get_availability():
-	return get_request('stations/availability')
+def getAvailability():
+	return get('stations/availability')

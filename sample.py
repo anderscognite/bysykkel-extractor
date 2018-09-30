@@ -1,12 +1,10 @@
 import os
-import subprocess
 
 from cognite.config import configure_session
 from cognite.v05.assets import get_assets, post_assets, get_asset_subtree, delete_assets
 from cognite.v05.timeseries import post_time_series, get_timeseries, post_multi_tag_datapoints
 from cognite.v05.dto import Asset, TimeSeries, Datapoint, TimeseriesWithDatapoints
-from bysykkelsdk import get_stations, get_availability, delete_request
-import os.path
+from oslobysykkelsdk import get_stations, get_availability, delete_request
 import argparse,json,time,threading
 
 bysykkel_asset_parent_id = 6764981534423173
