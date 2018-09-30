@@ -7,6 +7,7 @@ from cognite.v05.dto import TimeSeries
 from bysykkel import Station, find_or_create_asset, find_or_create_root_assets
 import oslobysykkelsdk as oslo
 import bergenbysykkelsdk as bergen
+import trondheimbysykkelsdk as trondheim
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--apikey', type=str, required=True)
@@ -36,8 +37,9 @@ def create_timeseries(cities):
 
 # Find root assets
 cities = {
-	#'Oslo': {'stations': oslo.get_stations()},
+	'Oslo': {'stations': oslo.get_stations()},
 	'Bergen': {'stations': bergen.get_stations()}
+	'Trondheim': {'stations': trondheim.get_stations()}
 }
 find_or_create_root_assets(cities)
 
