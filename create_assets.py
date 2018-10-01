@@ -11,8 +11,8 @@ import trondheimbysykkelsdk as trondheim
 parser = argparse.ArgumentParser()
 parser.add_argument('--apikey', type=str, required=True)
 parser.add_argument('--project', type=str, required=True)
-parser.add_argument('--delete_stations', action='store_true')
-parser.add_argument('--create_stations', action='store_true')
+parser.add_argument('--delete_assets', action='store_true')
+parser.add_argument('--create_assets', action='store_true')
 args = parser.parse_args()
 
 def delete_stations(cities):
@@ -49,6 +49,7 @@ def create_assets(cities):
 			# Would rather use source and sourceId, but Python SDK doesn't support it yet.
 			metadata = {}
 			metadata["bysykkel_id"] = json.dumps(station.id)
+			print('Id: ', metadata["bysykkel_id"])
 			name = find_name_for_station(station.name, names) # Avoid duplicate names
 			assets.append(Asset(name, parent_id=city_id, description=station.subtitle, metadata=metadata))
 	print('Creating assets in CDP')
@@ -66,10 +67,10 @@ cities = {
 }
 find_or_create_root_assets(cities)
 
-if args.delete_stations:
+if args.delete_assets:
 	delete_stations(cities)
 	
-if args.create_stations:
+if args.create_assets:
 	try:
 		create_assets(cities)
 	except Exception as e:
