@@ -1,5 +1,5 @@
 import requests, os
-from bysykkel import Station
+from bysykkel import Station, Availability
 
 def get(url):
 	headers = {}
@@ -27,4 +27,12 @@ def get_stations():
 	return stations
 
 def get_availability():
-	return get('stations/availability')
+	data = get('http://gbfs.urbansharing.com/bergen-city-bike/station_status.json')['data']
+	stations = []
+	for station in data["stations"]:
+		stations.append(Availability(
+			station_id=int(station['station_id']),
+			bikes=station['num_bikes_available'],
+			locks=station['num_docks_available']
+		))
+	return stations

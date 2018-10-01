@@ -1,5 +1,5 @@
 import requests, os
-from bysykkel import Station
+from bysykkel import Station, Availability
 
 def get(url):
 	baseUrl = "https://oslobysykkel.no/api/v1/"
@@ -30,4 +30,12 @@ def get_stations():
 	return stations
 
 def get_availability():
-	return get('stations/availability')
+	data = get('stations/availability')
+	stations = []
+	for station in data["stations"]:
+		stations.append(Availability(
+			station_id=station['id'],
+			bikes=station['availability']['bikes'],
+			locks=station['availability']['locks']
+		))
+	return stations

@@ -1,6 +1,12 @@
 from cognite.v05.assets import get_assets, post_assets, get_asset_subtree, delete_assets
 from cognite.v05.dto import Asset
 
+class Availability():
+	def __init__(self, station_id, locks, bikes):
+		self.id = station_id
+		self.locks = locks
+		self.bikes = bikes
+
 class Station():
 	def __init__(self, station_id, name, subtitle, longitude, latitude):
 		self.id = station_id
