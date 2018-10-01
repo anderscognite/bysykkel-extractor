@@ -18,7 +18,7 @@ def get_stations():
 	stations = []
 	for station in data["stations"]:
 		stations.append(Station(
-			station_id=station['station_id'],
+			station_id=int(station['station_id']),
 			name=station['name'],
 			subtitle=station['address'],
 			longitude=station['lon'],
