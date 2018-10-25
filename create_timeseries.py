@@ -19,6 +19,10 @@ args = parser.parse_args()
 # Set API key and project for current session
 configure_session(api_key=args.apikey, project=args.project)
 
+def delete_timeseries(cities):
+	# TODO: implement
+	print('delete_timeseries is not yet implemented')
+
 def create_timeseries(cities):
 	timeseries = []
 
@@ -44,9 +48,7 @@ cities = {
 find_or_create_root_assets(cities)
 
 if args.delete_timeseries:
-	# TODO: implement
-	#delete_timeseries(cities)
-	pass
+	delete_timeseries(cities)
 	
 if args.create_timeseries:
 	try:

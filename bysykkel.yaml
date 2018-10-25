@@ -16,13 +16,15 @@ spec:
         imagePullPolicy: Always
         image: gcr.io/cognite-experiments/andershaf-bysykkel:latest
         env:
-          - name: COGNITE_API_KEY_AH
+          - name: COGNITE_PROJECT
+            value: andershaf
+          - name: COGNITE_API_KEY
             valueFrom:
               secretKeyRef:
-                name: api-key
-                key: cognite_apikey
+                name: api-keys
+                key: cognite_api_key
           - name: BYSYKKEL_API_KEY
             valueFrom:
               secretKeyRef:
-                name: api-key
-                key: bysykkelapikey
+                name: api-keys
+                key: bysykkel_api_key

@@ -11,8 +11,14 @@ import oslobysykkelsdk as oslo
 import bergenbysykkelsdk as bergen
 import trondheimbysykkelsdk as trondheim
 
+def find_all_assets(cities):
+	# Find all assets representing city bike stations
+	for city, data in cities.items():
+		city_id = data['asset_id']
+		data['assets'] = get_asset_subtree(asset_id = city_id).to_json()
+
 def create_id_mapping(cities):
-	# Create mapping between city bike id's to asset id's
+	# Create mapping between city bike station id's to asset id's
 	for city, data in cities.items():
 		id_mapping = {}
 		for asset in data['assets']:
@@ -21,13 +27,8 @@ def create_id_mapping(cities):
 				id_mapping[bysykkel_id] = {'asset_id': asset['id'], 'asset_name': asset['name']}
 		data['id_mapping'] = id_mapping
 		
-def find_all_assets(cities):
-	# Find all assets representing city bike stations
-	for city, data in cities.items():
-		city_id = data['asset_id']
-		data['assets'] = get_asset_subtree(asset_id = city_id).to_json()
-
 def sample(cities):
+	# Sample bike availability for all cities
 	for city, data in cities.items():
 		try:
 			datapoints = []
@@ -49,9 +50,8 @@ def sample(cities):
 			print('Error fetching availaility for ', city, ': ' + str(e))
 	threading.Timer(1.0, sample, [cities]).start()
 
-
 # Set API key and project for current session
-configure_session(api_key=os.getenv('COGNITE_API_KEY_AH'), project='andershaf')
+configure_session(api_key=os.getenv('COGNITE_API_KEY'), project=os.getenv('COGNITE_PROJECT'))
 
 # Find root assets
 cities = {

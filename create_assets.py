@@ -30,7 +30,7 @@ def delete_stations(cities):
 		delete_assets(asset_ids)
 
 def find_name_for_station(name, existingNames):
-	# Some names are duplicates, append number to get unique numbers
+	# Some names are duplicates, append number to get unique names
 	i = 1
 	newName = name
 	while newName in existingNames:
@@ -49,7 +49,6 @@ def create_assets(cities):
 			# Would rather use source and sourceId, but Python SDK doesn't support it yet.
 			metadata = {}
 			metadata["bysykkel_id"] = json.dumps(station.id)
-			print('Id: ', metadata["bysykkel_id"])
 			name = find_name_for_station(station.name, names) # Avoid duplicate names
 			assets.append(Asset(name, parent_id=city_id, description=station.subtitle, metadata=metadata))
 	print('Creating assets in CDP')
@@ -75,4 +74,4 @@ if args.create_assets:
 		create_assets(cities)
 	except Exception as e:
 		print('Error creating assets: ' + str(e))
-	print('This could be that there already exists assets with name conflicts.')
+	print('This could be that there already exists assets which gives name conflicts.')
