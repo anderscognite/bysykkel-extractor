@@ -4,7 +4,7 @@ from cognite.v05.assets import get_asset_subtree
 from cognite.v05.timeseries import post_multi_tag_datapoints
 from cognite.v05.dto import TimeseriesWithDatapoints, Datapoint
 from cognite.config import configure_session
-import argparse,json,time,threading
+import argparse, json, time, threading, datetime
 
 from bysykkel import find_or_create_root_assets
 import oslobysykkelsdk as oslo
@@ -44,11 +44,11 @@ def sample(cities):
 					datapoints.append(TimeseriesWithDatapoints(bikes_asset_name, [Datapoint(timestamp, num_bikes)]))
 					datapoints.append(TimeseriesWithDatapoints(locks_asset_name, [Datapoint(timestamp, num_locks)]))
 			timestamp = int(time.time()*1000)
-			print('Posting %d data points' % len(datapoints), ' for ', city, ' at ', timestamp)
+			print(datetime.datetime.now(), 'Posting %d data points' % len(datapoints), ' for ', city, ' at ', timestamp)
 			post_multi_tag_datapoints(datapoints)
 		except Exception as e:
 			print('Error fetching availaility for ', city, ': ' + str(e))
-	threading.Timer(1.0, sample, [cities]).start()
+	threading.Timer(10.0, sample, [cities]).start()
 
 # Set API key and project for current session
 configure_session(api_key=os.getenv('COGNITE_API_KEY'), project=os.getenv('COGNITE_PROJECT'))
