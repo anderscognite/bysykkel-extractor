@@ -4,12 +4,14 @@ from cognite.v05.assets import get_asset_subtree
 from cognite.v05.timeseries import post_multi_tag_datapoints
 from cognite.v05.dto import TimeseriesWithDatapoints, Datapoint
 from cognite.config import configure_session
-import argparse, json, time, threading, datetime
+import argparse, json, time, datetime
 
 from bysykkel import find_or_create_root_assets
 import oslobysykkelsdk as oslo
 import bergenbysykkelsdk as bergen
 import trondheimbysykkelsdk as trondheim
+
+print('Initializing bysykkel sampler ...')
 
 def find_all_assets(cities):
 	# Find all assets representing city bike stations
@@ -48,7 +50,6 @@ def sample(cities):
 			post_multi_tag_datapoints(datapoints)
 		except Exception as e:
 			print('Error fetching availaility for ', city, ': ' + str(e))
-	threading.Timer(10.0, sample, [cities]).start()
 
 # Set API key and project for current session
 configure_session(api_key=os.getenv('COGNITE_API_KEY'), project=os.getenv('COGNITE_PROJECT'))
@@ -59,7 +60,13 @@ cities = {
 	'Bergen': {'stations': bergen.get_stations(), 'get_availability': bergen.get_availability},
 	'Trondheim': {'stations': trondheim.get_stations(), 'get_availability': trondheim.get_availability}
 }
+print('Finding root assets')
 find_or_create_root_assets(cities)
+print('Finding all assets')
 find_all_assets(cities)
+print('Creating id mapping')
 create_id_mapping(cities)
-sample(cities)
+print('Starting sampling ...')
+while True:
+	sample(cities)
+	time.sleep(5)
