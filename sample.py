@@ -1,17 +1,18 @@
-import os
+import argparse, json, time, datetime, os, sys
 
 from cognite.v05.assets import get_asset_subtree
 from cognite.v05.timeseries import post_multi_tag_datapoints
 from cognite.v05.dto import TimeseriesWithDatapoints, Datapoint
 from cognite.config import configure_session
-import argparse, json, time, datetime
 
 from bysykkel import find_or_create_root_assets
 import oslobysykkelsdk as oslo
 import bergenbysykkelsdk as bergen
 import trondheimbysykkelsdk as trondheim
 
-print('Initializing bysykkel sampler ...')
+def log(message):
+	print(datetime.datetime.now(), ';', message)
+	sys.stdout.flush()
 
 def find_all_assets(cities):
 	# Find all assets representing city bike stations
@@ -32,6 +33,7 @@ def create_id_mapping(cities):
 def sample(cities):
 	# Sample bike availability for all cities
 	for city, data in cities.items():
+		log(' Sampling for %s ...' % city)
 		try:
 			datapoints = []
 			for station in data['get_availability']():
@@ -46,10 +48,13 @@ def sample(cities):
 					datapoints.append(TimeseriesWithDatapoints(bikes_asset_name, [Datapoint(timestamp, num_bikes)]))
 					datapoints.append(TimeseriesWithDatapoints(locks_asset_name, [Datapoint(timestamp, num_locks)]))
 			timestamp = int(time.time()*1000)
-			print(datetime.datetime.now(), 'Posting %d data points' % len(datapoints), ' for ', city, ' at ', timestamp)
+			log('  Posting %d data points for %s at %d' % (len(datapoints), city, timestamp))
 			post_multi_tag_datapoints(datapoints)
+			log('  Data points posted to CDP.')
 		except Exception as e:
-			print('Error fetching availaility for ', city, ': ' + str(e))
+			log('  Error fetching availaility for %s: %s' % (city, str(e)))
+
+log('Initializing bysykkel sampler ...')
 
 # Set API key and project for current session
 configure_session(api_key=os.getenv('COGNITE_API_KEY'), project=os.getenv('COGNITE_PROJECT'))
@@ -60,13 +65,13 @@ cities = {
 	'Bergen': {'stations': bergen.get_stations(), 'get_availability': bergen.get_availability},
 	'Trondheim': {'stations': trondheim.get_stations(), 'get_availability': trondheim.get_availability}
 }
-print('Finding root assets')
+log('Finding root assets')
 find_or_create_root_assets(cities)
-print('Finding all assets')
+log('Finding all assets')
 find_all_assets(cities)
-print('Creating id mapping')
+log('Creating id mapping')
 create_id_mapping(cities)
-print('Starting sampling ...')
+log('Starting sampling ...')
 while True:
 	sample(cities)
 	time.sleep(5)
